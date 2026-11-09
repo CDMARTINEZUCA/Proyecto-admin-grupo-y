@@ -121,8 +121,6 @@ SELECT
     object_name,
     statement
 FROM sys.fn_get_audit_file(N'/var/opt/mssql/audit/Audit_Biblioteca*.sqlaudit', DEFAULT, DEFAULT)
--- LGIF = login fallido de servidor (en pruebas, errores de red de SSMS); se filtra para ver solo las pruebas.
--- Quitar esta línea para ver todos los eventos.
 WHERE action_id <> 'LGIF'
 ORDER BY event_time DESC;
 GO
