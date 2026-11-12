@@ -9,7 +9,7 @@ SET @dateSuffix = CONVERT(VARCHAR(20), GETDATE() AT TIME ZONE
                   REPLACE(CONVERT(VARCHAR(8), GETDATE() AT TIME ZONE 
                   'UTC' AT TIME ZONE 'Central America Standard Time', 108), ':', '');
 
-SET @fileName = '/backup/gestion_biblioteca_FULL_MANUAL_' + @dateSuffix + '.bak';
+SET @fileName = '/backup/gestion_biblioteca_FULL_' + @dateSuffix + '.bak';
 
 BACKUP DATABASE gestion_biblioteca 
 TO DISK = @fileName 
@@ -24,7 +24,7 @@ SET @dateSuffix = CONVERT(VARCHAR(20), GETDATE() AT TIME ZONE
                   REPLACE(CONVERT(VARCHAR(8), GETDATE() AT TIME ZONE 
                   'UTC' AT TIME ZONE 'Central America Standard Time', 108), ':', '');
 
-SET @fileName = '/backup/gestion_biblioteca_DIFF_MANUAL_' + @dateSuffix + '.bak';
+SET @fileName = '/backup/gestion_biblioteca_DIFF_' + @dateSuffix + '.bak';
 
 BACKUP DATABASE gestion_biblioteca 
 TO DISK = @fileName 
@@ -39,7 +39,7 @@ SET @dateSuffix = CONVERT(VARCHAR(20), GETDATE() AT TIME ZONE
                   REPLACE(CONVERT(VARCHAR(8), GETDATE() AT TIME ZONE 
                   'UTC' AT TIME ZONE 'Central America Standard Time', 108), ':', '');
 
-SET @fileName = '/backup/gestion_biblioteca_LOG_MANUAL_' + @dateSuffix + '.trn';
+SET @fileName = '/backup/gestion_biblioteca_log_' + @dateSuffix + '.trn';
 
 BACKUP LOG gestion_biblioteca 
 TO DISK = @fileName 
@@ -49,9 +49,13 @@ WITH COMPRESSION, STATS = 10;
 USE master;
 GO
 
+-- Cierra inmediatamente todas las conexiones activas a la base original
+ALTER DATABASE gestion_biblioteca SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
+
 -- 1. Restaurar el último FULL
 RESTORE DATABASE gestion_biblioteca 
-FROM DISK = '/backup/gestion_biblioteca_FULL_20261108_000000.bak' 
+FROM DISK = '/backup/gestion_biblioteca_FULL_20261108_212254.bak' 
 WITH NORECOVERY, REPLACE;
 GO
 
@@ -71,4 +75,8 @@ GO
 RESTORE LOG gestion_biblioteca 
 FROM DISK = '/backup/gestion_biblioteca_log_20261109_100000.trn' 
 WITH RECOVERY;
+GO
+
+-- Devuelve la base de datos a modo multiusuario normal
+ALTER DATABASE gestion_biblioteca SET MULTI_USER;
 GO
