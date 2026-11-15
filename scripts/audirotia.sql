@@ -7,7 +7,7 @@ BEGIN
     CREATE SERVER AUDIT Audit_Biblioteca
     TO FILE
     (
-        FILEPATH = N'/var/opt/mssql/audit/',
+        FILEPATH = N'/audit',
         MAXSIZE = 50 MB,              -- tamaño máximo de cada archivo
         MAX_ROLLOVER_FILES = 10,      -- 10 archivos x 50 MB = tope de 500 MB
         RESERVE_DISK_SPACE = OFF
@@ -120,7 +120,7 @@ SELECT
     schema_name,
     object_name,
     statement
-FROM sys.fn_get_audit_file(N'/var/opt/mssql/audit/Audit_Biblioteca*.sqlaudit', DEFAULT, DEFAULT)
+FROM sys.fn_get_audit_file(N'/audit/Audit_Biblioteca*.sqlaudit', DEFAULT, DEFAULT)
 WHERE action_id <> 'LGIF'
 ORDER BY event_time DESC;
 GO
